@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import model.Elektronik;
 
@@ -31,8 +32,18 @@ public class ElektronikRepo {
         return elektronik.add(elektronikBaru);
     }
 
-    public void delete(String idString) {
-        
+    public boolean delete(String idProduk) {
+        Iterator<Elektronik> iterator = elektronik.iterator();
+
+        while (iterator.hasNext()) {
+            Elektronik del = iterator.next();
+
+            if (del.getIdProduk().equalsIgnoreCase(idProduk)) {
+                iterator.remove();
+                return true;
+            }
+        }
+        return false;
     }
 
     public void readFile(String path) {
