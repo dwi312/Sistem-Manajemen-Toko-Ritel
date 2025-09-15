@@ -23,6 +23,26 @@ public class Console {
         System.out.println(msg);
     }
 
+    public String formPolosString(String message) {
+        System.out.print(message);
+        return input.nextLine();
+    }
+
+    public int formPolosInt(String message) {
+        System.out.print(message);
+        return input.nextInt();
+    }
+
+    public double formPolosDouble(String message) {
+        System.out.print(message);
+        return input.nextDouble();
+    }
+
+    public long formPolosLong(String message) {
+        System.out.print(message);
+        return input.nextLong();
+    }
+
     public void menu() {
         clearScreen();
         System.out.println("\n=====  Sistem Manajemen Toko Ritel  =====");

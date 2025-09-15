@@ -47,6 +47,32 @@ public class MakananRepo {
         return false;
     }
 
+    public boolean update(String idProduk, String namaBaru, double hargaBaru, long bulan) {
+        Iterator<Makanan> iterator = makanan.iterator();
+
+        while (iterator.hasNext()) {
+            Makanan del = iterator.next();
+
+            if (del.getIdProduk().equalsIgnoreCase(idProduk)) {
+                if (namaBaru == null) {
+                    del.setNama(namaBaru);
+                }
+
+                if (hargaBaru != 0) {
+                    del.setHargaDasar(hargaBaru);
+                }
+
+                if (bulan != 0) {
+                    LocalDate Kedaluwarsa = LocalDate.now().plusMonths(bulan);
+                    del.settanggalKedaluwarsa(Kedaluwarsa);
+                }
+                
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void readFile(String path) {
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
