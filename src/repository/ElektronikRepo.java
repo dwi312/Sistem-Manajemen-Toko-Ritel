@@ -45,6 +45,32 @@ public class ElektronikRepo {
         }
         return false;
     }
+    
+    public boolean update(String idProduk, String namaBaru, double hargaBaru, int garansiBaru) {
+        Iterator<Elektronik> iterator = elektronik.iterator();
+
+        while (iterator.hasNext()) {
+            Elektronik del = iterator.next();
+
+            if (del.getIdProduk().equalsIgnoreCase(idProduk)) {
+                
+                if (namaBaru == null) {
+                    del.setNama(namaBaru);
+                }
+
+                if (hargaBaru != 0) {
+                    del.setHargaDasar(hargaBaru);
+                }
+
+                if (garansiBaru != 0) {
+                    del.setGaransi(garansiBaru);
+                }
+                
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void readFile(String path) {
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {

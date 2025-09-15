@@ -86,6 +86,8 @@ public class Controller {
                 break;
             case 4:
                 view.clearScreen();
+                updateProduk(header);
+                view.enterToBack();
                 break;
             case 0:
                 return true;
@@ -97,25 +99,33 @@ public class Controller {
         return false;
     }
 
+    private HashSet<Elektronik> getElektronik() {
+         HashSet<Elektronik> list = elektronikRepo.all();
+
+         if (list == null || list.isEmpty()) {
+            view.displayMsg("Data Elektronik masih kosong.");
+            return null;
+         }
+         return list;
+    }
+
+    private HashSet<Makanan> getMakanan() {
+         HashSet<Makanan> list = makananRepo.all();
+
+         if (list == null || list.isEmpty()) {
+            view.displayMsg("Data Makanan masih kosong.");
+            return null;
+         }
+         return list;
+    }
+
     public void listProduk(String header) {
         view.header("Daftar Produk");
         try {
             if (header.equalsIgnoreCase("Elektronik")) {
-                HashSet<Elektronik> cek = elektronikRepo.all();
-                
-                if (cek == null || cek.isEmpty()) {
-                    view.displayMsg("Data " + header + " masih kosong.");
-                    return;
-                }
-                view.daftarProduk(cek);
+                view.daftarProduk(getElektronik());
             } else if (header.equalsIgnoreCase("Makanan")) {
-                HashSet<Makanan> cek = makananRepo.all();
-
-                if (cek == null || cek.isEmpty()) {
-                    view.displayMsg("Data " + header + " masih kosong.");
-                    return;
-                }
-                view.daftarProduk(cek);
+                view.daftarProduk(getMakanan());
             }
         } catch (Exception e) {
             System.err.println("Terjadi Kesalahan: " + e.getMessage());
@@ -171,19 +181,15 @@ public class Controller {
 
         try {
             if (header.equalsIgnoreCase("Elektronik")) {
-                HashSet<Elektronik> cek = elektronikRepo.all();
-                
-                if (cek == null || cek.isEmpty()) {
-                    view.displayMsg("Data " + header + " masih kosong.");
-                    return;
-                }
-
-                view.daftarProduk(cek);
-                
+                view.daftarProduk(getElektronik());
+                view.displayMsg("\nKembali ke menu masukan angka 0");
                 view.displayMsg("\nPilih nomor produk yang akan dihapus:");
                 int nomor = view.inputInt();
 
-                String idProduk = getIdByNo(nomor, cek);
+                if (nomor == 0) {
+                    return;
+                }
+                String idProduk = getIdByNo(nomor, getElektronik());
 
                 if (idProduk != null) {
                     if (elektronikRepo.delete(idProduk)) {
@@ -196,18 +202,15 @@ public class Controller {
                 }
 
             } else if (header.equalsIgnoreCase("Makanan")) {
-                HashSet<Makanan> cek = makananRepo.all();
-
-                if (cek == null || cek.isEmpty()) {
-                    view.displayMsg("Data " + header + " masih kosong.");
-                    return;
-                }
-                view.daftarProduk(cek);
-
+                view.daftarProduk(getMakanan());
+                view.displayMsg("\nKembali ke menu masukan angka 0");
                 view.displayMsg("\nPilih nomor produk yang akan dihapus:");
                 int nomor = view.inputInt();
-
-                String idProduk = getIdByNo(nomor, cek);
+                
+                if (nomor == 0) {
+                    return;
+                }
+                String idProduk = getIdByNo(nomor, getMakanan());
 
                 if (idProduk != null) {
                     if (makananRepo.delete(idProduk)) {
@@ -223,6 +226,65 @@ public class Controller {
             System.err.println("Terjadi Kesalahan: " + e.getMessage());
         }
         
+    }
+
+    public void updateProduk(String header) {
+        view.header("Update Produk");
+
+        try {
+            if (header.equalsIgnoreCase("Elektronik")) {
+                view.daftarProduk(getElektronik());
+                view.displayMsg("\nKembali ke menu masukan angka 0");
+                view.displayMsg("\nPilih nomor produk yang akan diubah:");
+                int nomor = view.inputInt();
+                
+                if (nomor == 0) {
+                    return;
+                }
+                String idProduk = getIdByNo(nomor, getElektronik());
+
+                if (idProduk != null) {
+                    String namaBaru = view.formPolosString("Masukan Nama baru: ");
+                    double hargaBaru = view.formPolosDouble("Masukan Harga baru: ");
+                    int garansi = view.formPolosInt("Masukan bulan garansi: ");
+
+                    if (elektronikRepo.update(idProduk, namaBaru, hargaBaru, garansi)) {
+                        view.displayMsg("Berhasil: Produk dengan ID " + idProduk + " berhasil diubah.");
+                    } else {
+                        view.displayMsg("Gagal: Produk tidak ditemukan.");
+                    }
+                } else {
+                    view.displayMsg("Pilihan nomor tidak valid.");
+                }
+
+            } else if (header.equalsIgnoreCase("Makanan")) {
+                view.daftarProduk(getMakanan());
+                view.displayMsg("\nKembali ke menu masukan angka 0");
+                view.displayMsg("\nPilih nomor produk yang akan diubah:");
+                int nomor = view.inputInt();
+
+                if (nomor == 0) {
+                    return;
+                }
+                String idProduk = getIdByNo(nomor, getMakanan());
+
+                if (idProduk != null) {
+                    String namaBaru = view.formPolosString("Masukan Nama baru: ");
+                    double hargaBaru = view.formPolosDouble("Masukan Harga baru: ");
+                    long bulan = view.formPolosLong("Masukan bulan Expired: ");
+
+                    if (makananRepo.update(idProduk, namaBaru, hargaBaru, bulan)) {
+                        view.displayMsg("Berhasil: Produk dengan ID " + idProduk + " berhasil diubah.");
+                    } else {
+                        view.displayMsg("Gagal: Produk tidak ditemukan.");
+                    }
+                } else {
+                    view.displayMsg("Pilihan nomor tidak valid.");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Terjadi Kesalahan: " + e.getMessage());
+        }
     }
     
     private String getIdByNo(int nomor, HashSet<? extends Produk> produkSet) {
