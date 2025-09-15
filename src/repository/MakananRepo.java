@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import model.Makanan;
 
@@ -30,6 +31,20 @@ public class MakananRepo {
         String idProduk = generateId(6);
         Makanan makananBaru = new Makanan(idProduk, nama, hargaDasar, tanggalKedaluwarsa);
         return makanan.add(makananBaru);
+    }
+
+    public boolean delete(String idProduk) {
+        Iterator<Makanan> iterator = makanan.iterator();
+
+        while (iterator.hasNext()) {
+            Makanan del = iterator.next();
+
+            if (del.getIdProduk().equalsIgnoreCase(idProduk)) {
+                iterator.remove();
+                return true;
+            }
+        }
+        return false;
     }
 
     public void readFile(String path) {

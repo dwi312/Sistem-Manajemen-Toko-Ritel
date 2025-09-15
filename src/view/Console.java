@@ -67,8 +67,6 @@ public class Console {
     }
 
     public void daftarProduk(HashSet<? extends Produk> produk) {
-        header("Daftar Barang");
-        
         if (produk == null || produk.isEmpty()) {
             System.out.println("Tidak ada data produk yang tersedia.");
             return;
